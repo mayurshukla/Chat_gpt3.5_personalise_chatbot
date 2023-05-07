@@ -1,0 +1,894 @@
+{
+ "cells": [
+  {
+   "cell_type": "code",
+   "execution_count": 9,
+   "id": "18ccb787",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import openai as OpenAI"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 41,
+   "id": "ec4a3903",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "Collecting PyPDF2\n",
+      "  Downloading pypdf2-3.0.1-py3-none-any.whl (232 kB)\n",
+      "\u001b[2K     \u001b[90m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\u001b[0m \u001b[32m232.6/232.6 kB\u001b[0m \u001b[31m3.3 MB/s\u001b[0m eta \u001b[36m0:00:00\u001b[0ma \u001b[36m0:00:01\u001b[0m\n",
+      "\u001b[?25hRequirement already satisfied: typing_extensions>=3.10.0.0 in /Users/apple/opt/anaconda3/lib/python3.9/site-packages (from PyPDF2) (4.5.0)\n",
+      "Installing collected packages: PyPDF2\n",
+      "Successfully installed PyPDF2-3.0.1\n",
+      "Note: you may need to restart the kernel to use updated packages.\n"
+     ]
+    }
+   ],
+   "source": [
+    "pip install PyPDF2"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 10,
+   "id": "ed66fa92",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "import os\n",
+    "\n",
+    "os.environ['OPENAI_API_KEY'] = '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'"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 19,
+   "id": "f789293f",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[Document(text='I am Mayur sharma', doc_id='9aca2290-b024-4bee-912c-0ec00a52b0b7', embedding=None, doc_hash='a67fc6026aae62e18d22be8a49aa4cee9ece90d181a991e66773f17a61a53bed', extra_info=None),\n",
+       " Document(text='I live in gadarwara and I work in info-tech', doc_id='9b8ca0a6-431e-4e6f-878a-09ccd82daf0d', embedding=None, doc_hash='d6872cbf18cb1561522cce734d2a31a1a4c8c483431c7cd344fa7a319cce02e2', extra_info=None),\n",
+       " Document(text='It is an it company and headquartered based in Mumbai, it stated in 1995 with small number of people and now it has become wolds second largest it company', doc_id='b7733c06-828b-4b55-9b6a-78071160da9c', embedding=None, doc_hash='00b93d5775ffb3e8d0dcfe7a9bdad7d9af65b305b80365484d14b6de0f27a7a9', extra_info=None)]"
+      ]
+     },
+     "execution_count": 19,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "from llama_index import Document\n",
+    "text_list = ['I am Mayur sharma','I live in gadarwara and I work in info-tech',\n",
+    "             'It is an it company and headquartered based in Mumbai, it stated in 1995 with small number of people and now it has become wolds second largest it company']\n",
+    "documents = [Document(t) for t in text_list]\n",
+    "documents"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 20,
+   "id": "8b1bc4f4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from llama_index.node_parser import SimpleNodeParser\n",
+    "parser = SimpleNodeParser()\n",
+    "nodes = parser.get_nodes_from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 21,
+   "id": "198c8cc2",
+   "metadata": {},
+   "outputs": [
+    {
+     "data": {
+      "text/plain": [
+       "[Node(text='I am Mayur sharma', doc_id='16c68375-b89d-4f21-a624-6e68048b0afb', embedding=None, doc_hash='a67fc6026aae62e18d22be8a49aa4cee9ece90d181a991e66773f17a61a53bed', extra_info=None, node_info={'start': 0, 'end': 17}, relationships={<DocumentRelationship.SOURCE: '1'>: '9aca2290-b024-4bee-912c-0ec00a52b0b7'}),\n",
+       " Node(text='I live in gadarwara and I work in info-tech', doc_id='82aa89bb-da6f-4c1d-8722-021f28c8e750', embedding=None, doc_hash='d6872cbf18cb1561522cce734d2a31a1a4c8c483431c7cd344fa7a319cce02e2', extra_info=None, node_info={'start': 0, 'end': 43}, relationships={<DocumentRelationship.SOURCE: '1'>: '9b8ca0a6-431e-4e6f-878a-09ccd82daf0d'}),\n",
+       " Node(text='It is an it company and headquartered based in Mumbai, it stated in 1995 with small number of people and now it has become wolds second largest it company', doc_id='01c1f65a-a48d-4a0e-8cb5-90cce45a4272', embedding=None, doc_hash='00b93d5775ffb3e8d0dcfe7a9bdad7d9af65b305b80365484d14b6de0f27a7a9', extra_info=None, node_info={'start': 0, 'end': 154}, relationships={<DocumentRelationship.SOURCE: '1'>: 'b7733c06-828b-4b55-9b6a-78071160da9c'})]"
+      ]
+     },
+     "execution_count": 21,
+     "metadata": {},
+     "output_type": "execute_result"
+    }
+   ],
+   "source": [
+    "nodes"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 22,
+   "id": "080a9e41",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from llama_index import GPTVectorStoreIndex\n",
+    "\n",
+    "index = GPTVectorStoreIndex.from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 23,
+   "id": "e54b8012",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "You are Mayur Sharma. You live in Gadarwara and you work in Info-Tech.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"who am i?\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 24,
+   "id": "112f2c2d",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Info-tech was established in 1995.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"when did info-tech establised\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 26,
+   "id": "c966c9d4",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "-----------------------------------------------------------------------------------------------------------\n"
+     ]
+    }
+   ],
+   "source": [
+    "print('-----------------------------------------------------------------------------------------------------------')"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 27,
+   "id": "05a94011",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "# Load you data into 'Documents' a custom type by LlamaIndex\n",
+    "\n",
+    "from llama_index import SimpleDirectoryReader\n",
+    "\n",
+    "documents = SimpleDirectoryReader('/Users/apple/Documents/custom-knowledge-chatbot-main/custom-knowledge-chatbot/data').load_data()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 28,
+   "id": "b298c0c1",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from llama_index.node_parser import SimpleNodeParser\n",
+    "parser = SimpleNodeParser()\n",
+    "nodes = parser.get_nodes_from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 29,
+   "id": "9a9db8e3",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from llama_index import GPTVectorStoreIndex\n",
+    "\n",
+    "index = GPTVectorStoreIndex.from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 30,
+   "id": "2a62fb0d",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "I think Facebook's LLaMa is a great step forward in democratizing access to large language models and advancing research in this subfield of AI. It is encouraging to see that they are making the model available at several sizes and providing a model card to detail how it was built in accordance with responsible AI practices. I also appreciate that they are releasing the model under a noncommercial license focused on research use cases and granting access to academic researchers, government, civil society, and industry research laboratories. This will help ensure that the model is used responsibly and with integrity.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"What do you think of Facebook's LLaMa?\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "6914222e",
+   "metadata": {},
+   "source": [
+    "# Wikipedia Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 31,
+   "id": "9342c6c7",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from llama_index import download_loader\n",
+    "\n",
+    "WikipediaReader = download_loader(\"WikipediaReader\")\n",
+    "\n",
+    "loader = WikipediaReader()\n",
+    "wikidocs = loader.load_data(pages=['Cyclone Freddy'])\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "8ec47839",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 34,
+   "id": "f2cad5a2",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "from llama_index import GPTVectorStoreIndex\n",
+    "\n",
+    "wiki_index = GPTVectorStoreIndex.from_documents(wikidocs)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 35,
+   "id": "8527def0",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Cyclone Freddy is a very intense tropical cyclone that traversed the southern Indian Ocean for more than five weeks in February and March 2023. It is the third-deadliest tropical cyclone recorded in the Southern Hemisphere, only behind 2019's Cyclone Idai and the 1973 Flores cyclone. It is both the longest-lasting and highest-ACE-producing tropical cyclone ever recorded worldwide.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = wiki_index.as_query_engine()\n",
+    "response = query_engine.query(\"What is cyclone freddy?\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "0b8c1a2d",
+   "metadata": {},
+   "source": [
+    "# Customer Support Example"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 36,
+   "id": "5d89de40",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "documents = SimpleDirectoryReader('/Users/apple/Documents/custom-knowledge-chatbot-main/custom-knowledge-chatbot/asos').load_data()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 38,
+   "id": "7d2006c4",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "index = GPTVectorStoreIndex.from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 39,
+   "id": "7a70def1",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "In the United Arab Emirates (UAE), you have the option of signing up for ASOS Premier. This service gives you free Standard and Express delivery all year round when you spend over 150 AED. Your ASOS Premier subscription will only be valid on the site you purchased it on and will not be valid for orders being delivered outside of the UAE. The cost of ASOS Premier is 200 AED and it can take up to one hour to be activated against your account. You'll receive an email once it's active.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"What premier service options do I have in the UAE?\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "2e40b839",
+   "metadata": {},
+   "source": [
+    "# My_resume_Q&A Chat Bot"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 42,
+   "id": "7736402f",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "documents = SimpleDirectoryReader('/Users/apple/Desktop/untitled folder 2').load_data()"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 44,
+   "id": "0a3e2959",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "index = GPTVectorStoreIndex.from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 46,
+   "id": "d869f165",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Mayur Shukla has professional experience working as a Senior Associate Consultant at Infosys in Mysore. He has been leading a small team for a world largest gas power technology, services, and solutions provider. He has been managing in-house applications at different levels, including application support, testing new functionality, reporting bugs and fixing bugs at certain level. He has also analyzed 10k records to identify common issues and reduced the number of complaints to 35%. Additionally, he has been checking 100+ SQL tables on a daily basis, debugging stored procedures, and running queries related to update, insert and delete in production databases.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"tell me something about mayur shukla professional experence\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "markdown",
+   "id": "01d123d3",
+   "metadata": {},
+   "source": [
+    "# Scaler_Placement_Q&A Chat Bot"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 47,
+   "id": "cc8aafaa",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "documents = SimpleDirectoryReader('/Users/apple/Desktop/untitled folder 4').load_data()\n",
+    "index = GPTVectorStoreIndex.from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 48,
+   "id": "69c80c77",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "The Scaler placement process begins with the learner updating their profile and disclosing all the correct information in the learner portal. This includes details such as past education, employment experience, salary, notice period, updated resume or any other information or document requested by the Scaler team from time to time. \n",
+      "\n",
+      "Once the learner has met the minimum module completion requirement, they need to mark their intent for placement support in the system. This acts as a signal to the careers team to start referring the learner to jobs. \n",
+      "\n",
+      "In addition to the minimum module completion, learners will be required to clear an expert mock interview depending on the key skill(s) requirement of a job or a type of job. After clearing the expert mock interview, the learner will be eligible to apply or be referred to a job which has the mock-interviewed skill as a mandatory requirement. \n",
+      "\n",
+      "The learner can then book 'Expert Mock Interviews' and apply for jobs through the job application procedure. The Scaler career support team will provide feedback on the applications and preparation support for the interviews. \n",
+      "\n",
+      "Finally, the learner will need to accept the offer and sign the Code of Conduct. The career support will be valid until the lear\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"explain scaler placement process\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 49,
+   "id": "66a80616",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "The eligibility criteria for placements have two parts:\n",
+      "i) Basic eligibility: This defines the minimum module completion required to participate in any company hiring process. The moment a learner meets the minimum module completion requirement, they need to mark their intent for placement support in the system. \n",
+      "ii) Jobs-specific eligibility criteria: In addition to minimum module completion, learners will be required to clear an expert mock interview depending on the key skill(s) requirement of a job or a type of job (eg. SDE 1 in product companies). Only after clearing, the expert mock interview(s) will candidates be eligible to apply or be referred to a job which has the mock-interviewed skill as a mandatory requirement.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"what is eligibility criteria\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 50,
+   "id": "694414b7",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Learners are encouraged to share this document with their peers and other interested parties. However, they should ensure that the document is not modified in any way and that the original source is credited.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"sharing this document\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 51,
+   "id": "fe1a0341",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "There are two ways to apply for a job via Scaler at our employer partner organizations: 1) On the Job Tracker, and 2) Via the Scaler Career Support Team. Eligible learners can discover all active opportunities from the Job Tracker and apply for any opportunity that appeals to their interests. The Scaler Career Support Team can also assist learners in applying for job opportunities.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"way to apply for a job\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 52,
+   "id": "672d6734",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Points to keep in mind when reading this document include: \n",
+      "1. Introduction of Mock Expert Interviews: To assess and prepare learners for placements, mock expert interviews have been introduced and they have to be taken after course module completion. \n",
+      "2. Skills Tested in Mock Interviews: After analysing the skill requirements of hundreds of tech jobs, we have identified must-have skills for which learners should take mock interviews in order to become job-ready. \n",
+      "3. Job Tracker and Other Product Changes: Post completion of a module, learners will be able to book a mock interview through the learner dashboard. \n",
+      "4. Additional Job Opportunities for Placed Learners: If a learner has been placed at a company, they can be referred to another company if the second company offers 1.6X of the compensation offered by the first company. \n",
+      "5. Validity of Placement Support: The Scaler careers team will support all unplaced learners in placements for the next 6 months i.e. post completion of the course at Scaler. \n",
+      "6. Ways to Apply for a Job: Eligible learners can apply to job opportunities through multiple channels, such as Scaler's job tracker, Careers' team recruit\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"points to keep in mind\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 53,
+   "id": "627eb620",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Must have skills are the skills specified against each job that a learner must have in order to be eligible for applying to that job. These skills are typically categorized as Must have, Good to have, and Bar raiser. Examples of must have skills include DSA, Languages (Java, Python, Javascript), LLD, HLD, and Backend/Frontend preference (React, Spring/Springboot). For DSML learners, must have skills include Python Programming and DSA, SQL, Exploratory Data Analysis, Machine Learning Supervised, Machine Learning Unsupervised, Deep Learning Computer Vision, and Deep Learning Natural Language Processing.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"must have skills\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 54,
+   "id": "aa1ddef4",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "To contact Scaler Career Support, learners can write to placements@scaler.com or create a ticket from the learner portal. The Scaler Career Support team will respond to queries within 2 working days.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"How to contact scaler carrier support\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "cf49b34f",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "9d9f3e04",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "98ee31fa",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 55,
+   "id": "089f6d72",
+   "metadata": {},
+   "outputs": [],
+   "source": [
+    "documents = SimpleDirectoryReader('/Users/apple/Desktop/untitled folder 5').load_data()\n",
+    "index = GPTVectorStoreIndex.from_documents(documents)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 56,
+   "id": "3137799e",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Yes, this policy covers Maternity Expenses. This is stated in Part (a) of the Policy and is further clarified in item 28 of the context information.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"does this policy cover Maternity Expenses\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 57,
+   "id": "1db54baf",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "This policy is about providing health insurance coverage for individuals and their families. It covers hospitalisation and domiciliary hospitalisation expenses, as well as outpatient department expenses. It also includes add-on coverage options that can be purchased. The policy also outlines the claims procedure, renewal notice, and moratorium period. It also states that any disputes concerning the policy will be subject to Indian law and that all claims must be paid in Indian Rupees.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"what is this policy all about\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 58,
+   "id": "6774767b",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "According to this policy, the family definition is Employee, spouse, and 4 dependent children up to 25 years of age.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"family definition according to this policy\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 59,
+   "id": "47797c87",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Pre-Existing Disease means any condition, ailment or injury or disease that has been diagnosed by a physician within 48 months prior to the effective date of the policy issued by the insurer or its reinstatement, or for which medical advice or treatment was recommended by, or received from, a physician within 48 months prior to the effective date of the policy issued by the insurer or its reinstatement.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"Pre-Existing Disease\")\n",
+    "print(response)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 60,
+   "id": "51ca4c48",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "Yes, Pre-Existing Disease is covered in this policy. The policy states that Pre-Existing Diseases shall be covered after 1 year (or as stated in Part (a) of the Policy) of continuous coverage have elapsed since the inception of the first Policy with the Company.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"does Pre-Existing Disease covered in this policy\")\n",
+    "print(response)\n"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 61,
+   "id": "2b31bf08",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "1. Give notice to the TPA by calling the toll free number provided in the policy and also in writing at the Company's address with the following particulars: \n",
+      "- Policy number \n",
+      "- Name of the insured \n",
+      "- Relationship of the proposer with the Policyholder \n",
+      "- Nature of Illness or Injury \n",
+      "- Name and address of the attending Medical Practitioner and the Hospital \n",
+      "- Any other information that may be relevant to the Illness / Injury/Hospitalisation \n",
+      "\n",
+      "2. Upon the happening of any event giving rise or likely to give rise to a claim under this policy, the insured shall give immediate notice thereof in writing to the Company. \n",
+      "\n",
+      "3. The insured shall deliver to the Company, within 30 days from the date of completion of treatment, a detailed statement in writing as per the claim form together with bills, vouchers and any other material particular, relevant to the making of such claim. \n",
+      "\n",
+      "4. The insured shall tender to the Company all reasonable information, assistance and proofs in connection with any claim hereunder. \n",
+      "\n",
+      "5. The insured shall be required to furnish the following for or in support of a claim: \n",
+      "- Duly completed claim form signed by the insured \n",
+      "\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"steps to follow to get claim on time\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 62,
+   "id": "8d83cbd3",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "You can cancel this policy by giving 15 days' written notice. There would be no refund of premium on cancellation on grounds of misrepresentation, non-disclosure of material facts or fraud.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"How can i cancle this policy\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 64,
+   "id": "9b7e4090",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "All benefits under this policy include coverage for diseases, illnesses, accidents, or injuries requiring hospitalisation or domiciliary hospitalisation, medical/surgical treatment in India, low claim ratio discounts, high claim ratio loadings, renewal of the policy, incontestability and duty of disclosure, observance of terms and conditions, no constructive notice, notice of charge, special provisions, overriding effect of part (c to g) of the policy, moratorium period, policy disputes, cause of action/currency for payments, withdrawal of policy, and cashless settlement.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"all benifits under this policy\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 65,
+   "id": "b18ad324",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "The procedure for lodging the claim for Reimbursement Settlement is as follows: \n",
+      "1. The Insured shall give immediate notice in writing to the Company of any event giving rise or likely to give rise to a claim under this policy. \n",
+      "2. The Insured shall deliver to the Company, within 30 days from the date of completion of treatment, a detailed statement in writing as per the claim form together with bills, vouchers and any other material particulars relevant to the making of such claim. \n",
+      "3. The Insured shall tender to the Company all reasonable information, assistance and proofs in connection with any claim hereunder. \n",
+      "4. The benefit payable shall be such expenses reasonably and necessarily incurred by or on behalf of the Insured Person under the following categories but not exceeding the Sum Insured in respect of such Insured person as specified in Part (a) of the Policy. \n",
+      "5. The Insured shall be required to furnish the following for or in support of a claim: \n",
+      "(i) Duly completed claim form signed by the insured \n",
+      "(ii) Original bills, receipts and discharge certificate/card from the Hospital \n",
+      "(iii) Original bills from Chemists supported by proper prescription \n",
+      "(iv) Original investigation\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"For Reimbursement Settlement\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": 66,
+   "id": "1be73d71",
+   "metadata": {},
+   "outputs": [
+    {
+     "name": "stdout",
+     "output_type": "stream",
+     "text": [
+      "\n",
+      "The Insured shall be required to furnish the following for or in support of a claim: \n",
+      "(i) Duly completed claim form signed by the insured \n",
+      "(ii) Original bills, receipts and discharge certificate/card from the Hospital \n",
+      "(iii) Original bills from Chemists supported by proper prescription \n",
+      "(iv) Original investigation test reports and payment receipts \n",
+      "(v) Indoor case papers \n",
+      "(vi) Medical Practitioner's referral letter advising Hospitalization in non-Accident cases \n",
+      "(vii) Account details for Electronic Fund Transfer (EFT mandate form and cancelled cheque) \n",
+      "(viii) Any other document as required by the Company or the TPA to investigate the Claim or the Company's obligation to make payment for it.\n"
+     ]
+    }
+   ],
+   "source": [
+    "query_engine = index.as_query_engine()\n",
+    "response = query_engine.query(\"Claim documents\")\n",
+    "print(response)"
+   ]
+  },
+  {
+   "cell_type": "code",
+   "execution_count": null,
+   "id": "3b0dedad",
+   "metadata": {},
+   "outputs": [],
+   "source": []
+  }
+ ],
+ "metadata": {
+  "kernelspec": {
+   "display_name": "Python 3 (ipykernel)",
+   "language": "python",
+   "name": "python3"
+  },
+  "language_info": {
+   "codemirror_mode": {
+    "name": "ipython",
+    "version": 3
+   },
+   "file_extension": ".py",
+   "mimetype": "text/x-python",
+   "name": "python",
+   "nbconvert_exporter": "python",
+   "pygments_lexer": "ipython3",
+   "version": "3.9.12"
+  }
+ },
+ "nbformat": 4,
+ "nbformat_minor": 5
+}

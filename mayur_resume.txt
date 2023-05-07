@@ -1,0 +1,57 @@
+MAYUR  SHUKLA (Jabalpur , India)
+EDUCATION				       		           CONTACT
+Master of business Administration. Pune                                          Email Id:  mayurshukla9@gmail.com                                                                                                            
+BIMHRD(Business Analytics)		                                      LinkedIn:  linkedin.com/in/mayur-shukla-a88837120                                                                                                            
+Batch: 2019-2021
+B.E.(Electronics and Communication), Bhopal 
+Batch: 2014-2018                                       		            Mob: +91- 8989607420
+
+
+Professional Experience							            	   
+
+Infosys, Mysore |Sr. Associate Consultant 							                Feb’21-Present
+
+Leading a small team for world largest gas power technology, services, and solutions provider. Managing in-house application at different level including application support, testing new functionality, reporting bugs and fixing bugs at certain level. 
+	Analyzing user complaints to understand trend, frequently occurring issues, developing relevant matric to present business 
+	Analyzed 10k records to identified common issues and reduced number of complaints to 35%.
+	Checking 100+ SQL table on day to day basis, debugging stored procedures, running queries related to update, insert and delete in production data base.
+
+Projects
+
+Zee Movie Recommendation system | Zee Movies Case Study	           	                                       Jan21’-Feb’21
+	Implemented item-item similarity based, using Hamming Distance and User-user similarity-based recommendation system 
+using Euclidian Distance to make best prediction for movie recommendation.
+	Implemented Collaborative Filtering methods using Matrix Factorization.
+
+Ed Ease Time Series Forecasting | Ed Ease (Ad Infrastructure Provider) Case Study.                   Feb’23-Mar’23
+	Analyzed and feature engineered (145k, 554) Wikipedia page views records and used regex to create new feature from text data.
+	Applied simple forecasting methods like Single, Double & Triple Exponential Smoothing with multiplicative trend and multiplicative seasonality to achieve mean absolute percentage error respectively 6.5%, 5%, 4%. 
+
+Ola Cabs Driver Churn Prediction |Ola (Multinational Ridesharing company).                              Dec’23-Mar’23
+	Visualized (20k, 13) driver data set to identified key feature which are responsible for driver churn and developed a 
+supervised model to predict ola driver churn.
+	Performed data preprocessing, feature engineering and implemented ML solution framework to classify customer based 
+on Driver Data, achieved 0.78 precision & 85% accuracy using Random Forest.
+
+Technical Skills 
+
+	Python
+	SQL
+	Machine Learning
+	Deep Learning
+	Statistics 
+	Excel 
+	R (Basic Knowledge)
+	Docker (Basic Knowledge)
+	Flask (Basic Knowledge)
+	Azure machine learning (Basic Knowledge)
+	AWS Sage Maker (Basic knowledge)
+	Git/ Git-Hub (Basic Knowledge)
+
+Certifications                                                                  
+
+	Scaler Data Science Certification (Dec21 to till date)
+	Introduction to data engineering
+	Writing efficient code with python
+	Introduction to shell
+	Introduction to Statistics in R
